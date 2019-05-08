@@ -925,6 +925,8 @@ private:
 #if MODE_ZIGZAG_ENABLED == ENABLED
     ModeZigZag mode_zigzag;
 #endif
+    ModeHoverSlam mode_hoverslam;
+
 
     // mode.cpp
     Mode *mode_from_mode_num(const uint8_t mode);

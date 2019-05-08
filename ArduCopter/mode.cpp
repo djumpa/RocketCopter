@@ -159,7 +159,9 @@ Copter::Mode *Copter::mode_from_mode_num(const uint8_t mode)
             ret = &mode_zigzag;
             break;
 #endif
-
+        case HOVERSLAM:
+            ret = &mode_hoverslam;
+            break;
         default:
             break;
     }
