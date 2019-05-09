@@ -18,6 +18,7 @@ cvx_begin QUIET
     maximize( z(N) )
     
     subject to
+        u(2,1) >= s .* cosd(0);
         % Initial condition constraints
         r(:,1) == r0;
         v(:,1) == v0;
@@ -25,6 +26,9 @@ cvx_begin QUIET
         % Terminal condition constraints
         r(:,N) == rf;
         v(:,N) == vf;
+        u(2,N) >= s .* cosd(0);
+        u(2,N-1) >= s .* cosd(0);
+        u(2,N-2) >= s .* cosd(0);
         % Dynamical constraints
         for i=1:N-1
             % Position / Velocity
@@ -38,7 +42,7 @@ cvx_begin QUIET
         for i=1:N
             norm(u(:,i)) <= s(i);
             % Feasible/conservative Taylor series expansion
-            z0_term = m_wet - alpha * r2 * (i-1) * dt;
+            z0_term = max(p.m_dry,m_wet - alpha * r2 * (i-1) * dt);
             z1_term = m_wet - alpha * r1 * (i-1) * dt;
             z0 = log(z0_term);
             z1 = log(z1_term);
@@ -58,6 +62,9 @@ cvx_begin QUIET
         % Glide-slope surface constraint
         slope = 10;
         r(1,:) <= r(2,:) / tand(slope);
+        % Velocity constraint
+        %abs(v) <= 10;
+        
 cvx_end
 if strcmp(cvx_status, 'Solved')
     m = exp(z);
@@ -65,7 +72,11 @@ if strcmp(cvx_status, 'Solved')
 elseif strcmp(cvx_status, 'Infeasible')
     m_used = m_wet;
 elseif strcmp(cvx_status, 'Inaccurate/Solved')
-    m_used = m_wet;
+    m = exp(z);
+    m_used = m(1) - m(N);
+elseif strcmp(cvx_status, 'Inaccurate/Infeasible')
+    m = exp(z);
+    m_used = m(1) - m(N);
 else
     fprintf('Error! %s', cvx_status);
 end

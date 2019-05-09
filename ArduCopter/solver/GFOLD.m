@@ -32,11 +32,11 @@ function [tv, m_used, r, v, u, m] = GFOLD(N, r0, v0, rf, vf, m_wet, theta, p)
     r1 = p.min_throttle * p.T_max * cosd(p.phi);
     r2 = p.max_throttle * p.T_max * cosd(p.phi);
     tf_min = p.m_dry * norm(vf - v0) / r2;
-    tf_max = (m_wet - p.m_dry) / (alpha * r1);
+    tf_max = (m_wet - p.m_dry) / (alpha * r1)/20;
     
     cvx_solver SEDUMI
     obj_fun = @(t)( GFOLD_fixed_time(t, N, r0, v0, rf, vf, m_wet, theta, p) );
-    options = optimset('TolX',0.5,'Display','iter');
+    options = optimset('TolX',0.1,'Display','iter');
     tf_opt = fminbnd(obj_fun, tf_min, tf_max, options);
     
     % Re-run optimal case
