@@ -8,15 +8,15 @@ r_d = [0 ; 0];
 v_d = [0 ; 0];
 
 p.phi = 0; % cant angle
-p.T_max = 300; % MAX thrust
-p.max_throttle = 0.8; p.min_throttle = 0.1; 
+p.T_max = 220; % MAX thrust
+p.max_throttle = 1.0; p.min_throttle = 0.1; 
 p.Isp = 225;
 p.m_dry = 5; %kg
 p.g = [0 ; -9.80665]; % gravity vector
 
 
 % Initialize controller with GFOLD-computed trajectory
-[G.tv, ~, G.r, G.v, G.u, G.m] = GFOLD(50, r_0, v_0, r_d, v_d, m_0, 35, p);
+[G.tv, ~, G.r, G.v, G.u, G.m] = GFOLD(15, r_0, v_0, r_d, v_d, m_0, 35, p);
 G.r_spline = spapi(4, G.tv, G.r);
 G.v_spline = spapi(3, G.tv, G.v);
 G.a_spline = spapi(2, G.tv, G.u);

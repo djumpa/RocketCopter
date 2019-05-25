@@ -54,6 +54,7 @@ cvx_begin QUIET
             % Impose physical extremal mass limits
             z(i) >= z0;
             z(i) <= z1;
+            
         end
         % Thrust pointing constraint
         u(2,:) >= s .* cosd(theta);
@@ -63,7 +64,7 @@ cvx_begin QUIET
         slope = 10;
         r(1,:) <= r(2,:) / tand(slope);
         % Velocity constraint
-        %abs(v) <= 10;
+        abs(v) <= 5;
         
 cvx_end
 if strcmp(cvx_status, 'Solved')
