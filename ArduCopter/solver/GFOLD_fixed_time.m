@@ -11,6 +11,9 @@ alpha = 1 / (p.Isp * g0 * cosd(p.phi));
 r1 = p.min_throttle * p.T_max * cosd(p.phi);
 r2 = p.max_throttle * p.T_max * cosd(p.phi);
 
+rho = 1.2;
+cda = 0.07;
+
 cvx_begin QUIET
     % Parameterize trajectory position, velocity, thrust acceleration, ln mass
     variables r(2,N) v(2,N) u(2,N) z(1,N) s(1,N)
@@ -32,7 +35,7 @@ cvx_begin QUIET
         % Dynamical constraints
         for i=1:N-1
             % Position / Velocity
-            v(:,i+1) == v(:,i) + dt*p.g + (dt/2)*(u(:,i) + u(:,i+1));
+            v(:,i+1) == v(:,i) + dt*p.g + (dt/2)*(u(:,i) + u(:,i+1))-(dt/2)*15*rho*cda*v(:,i);
             r(:,i+1) == r(:,i) + (dt/2)*(v(:,i) + v(:,i+1)) + ...
                 (dt^2/12)*(u(:,i+1) - u(:,i));
             % Mass
